@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
+	<title>First Bulma</title>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 	<style>
@@ -15,7 +15,7 @@
 
 .container {
 		max-width: 1200px;
-		margin: 0 50px;
+		margin-left: 70px;;
 		align-content: center;
 	}
 	.icon {
@@ -25,7 +25,7 @@
 	
 	.sub-container {
 		display: flex;
-		padding: 50px 50px;
+		padding: 40px 0px;
 		justify-content: space-between;
 	}
 	
@@ -73,12 +73,36 @@
 	  color: white;
   }
 
+  .panel-block{
+	padding: 8px 16px;
+  }
+
+  .card{
+	border-radius: 5px;
+  }
+   .panel{
+	border-radius: 5px;
+  }
+
+  .menu-list a.is-active {
+	background-color: #485fc7;
+  }
+
+  a{
+	color: #485fc7;
+  }
+
+  .middle-partC{
+	border-radius: 5px;
+  }
+
+
 	</style>
 
 </head>
 
 <body>
-	<nav class="navbar" role="navigation" aria-label="main navigation">
+	<nav class="navbar is-primary" role="navigation" aria-label="main navigation">
 		<div class="navbar-brand ">
 			<a class="navbar-item hover" href="https://bulma.io">
 				<img src="https://bulma.nn" alt="Bulma: a" class="logo ">
@@ -116,7 +140,7 @@
 			<div class="navbar-end">
 				<div class="navbar-item">
 					<div class="buttons">
-						<a class="button is-light">
+						<a class="button is-light" href="https://x.com/intent/post?text=Bulma%3A%20a%20modern%20CSS%20framework%20based%20on%20Flexbox&hashtags=bulmaio&url=https%3A%2F%2Fbulma.io&via=jgthms"  target="_blank">
 							<div class="icon"> <i class="fa-brands fa-twitter fa-lg"></i> </div>
 							<div> <span>Tweet</span> </div>
 						</a>
@@ -294,7 +318,7 @@
 			</div>
 		</div>
     <div class="column is-one-quarter">
-      <h2 class="title">Table of Content</h2>
+      <h2 class="title has-text-weight-semibold" style="margin-bottom: 3px;">Table of Contents</h2>
       <h3 class="subtitle">Intra-page navigation</h3>
       <aside class="menu">
   <p class="menu-label">General</p>
