@@ -1,0 +1,49 @@
+{
+  "activities": [
+    {
+      "id": 1,
+      "userId": 2,
+      "type": "Running",
+      "durationMin": 35,
+      "calories": 320,
+      "date": "2026-03-10",
+      "notes": "Morning run in the park"
+    },
+    {
+      "id": 2,
+      "userId": 2,
+      "type": "Gym",
+      "durationMin": 50,
+      "calories": 410,
+      "date": "2026-03-12",
+      "notes": "Upper body workout"
+    },
+    {
+      "id": 3,
+      "userId": 3,
+      "type": "Cycling",
+      "durationMin": 40,
+      "calories": 350,
+      "date": "2026-03-11",
+      "notes": "Evening cycling session"
+    },
+    {
+      "id": 4,
+      "userId": 3,
+      "type": "Yoga",
+      "durationMin": 30,
+      "calories": 120,
+      "date": "2026-03-13",
+      "notes": "Relaxing yoga flow"
+    },
+    {
+      "id": 5,
+      "userId": 1,
+      "type": "Walking",
+      "durationMin": 25,
+      "calories": 100,
+      "date": "2026-03-09",
+      "notes": "Light walk"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "User 1",
+      "email": "user_1@fittrack.com",
+      "password": "admin123",
+      "role": "admin",
+      "age": 30,
+      "heightCm": 178,
+      "weightKg": 75
+    },
+    {
+      "id": 2,
+      "name": "Dhyan Patel",
+      "email": "dhyan@fittrack.com",
+      "password": "user123",
+      "role": "member",
+      "age": 24,
+      "heightCm": 172,
+      "weightKg": 68
+    },
+    {
+      "id": 3,
+      "name": "User 3",
+      "email": "user_3@fittrack.com",
+      "password": "user123",
+      "role": "member",
+      "age": 26,
+      "heightCm": 180,
+      "weightKg": 73
+    }
+  ]
+}
