@@ -1,17 +1,24 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import type { User } from '@/types'
 import { useUsersStore } from './users'
 
 export const useAuthStore = defineStore('auth', () => {
-  const currentUser = ref<User | null>(null)
+  const currentUserId = ref<number | null>(null)
+
+  const usersStore = useUsersStore()
+
+  const currentUser = computed(() => {
+    if (currentUserId.value === null) {
+      return null
+    }
+
+    return usersStore.getUserById(currentUserId.value)
+  })
 
   const isAuthenticated = computed(() => currentUser.value !== null)
   const isAdmin = computed(() => currentUser.value?.role === 'admin')
 
   function login(email: string, password: string) {
-    const usersStore = useUsersStore()
-
     const foundUser = usersStore.users.find(
       (user) =>
         user.email.toLowerCase() === email.toLowerCase() &&
@@ -19,7 +26,7 @@ export const useAuthStore = defineStore('auth', () => {
     )
 
     if (foundUser) {
-      currentUser.value = foundUser
+      currentUserId.value = foundUser.id
       return true
     }
 
@@ -27,10 +34,11 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function logout() {
-    currentUser.value = null
+    currentUserId.value = null
   }
 
   return {
+    currentUserId,
     currentUser,
     isAuthenticated,
     isAdmin,
