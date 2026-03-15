@@ -1,6 +1,4 @@
-Updated README.md content:
 
-````markdown
 # Fitness Tracker App
 
 A **Fitness Tracker App** built with **Vue.js**.
@@ -26,4 +24,3 @@ npm run dev
 ```bash
 npm run build
 ```
-````
