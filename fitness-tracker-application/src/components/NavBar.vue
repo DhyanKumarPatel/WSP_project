@@ -8,7 +8,6 @@ const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 
-// Close mobile menu on route change
 watch(() => route.path, () => {
   isActive.value = false
 })
@@ -22,23 +21,25 @@ function handleLogout() {
 <template>
   <nav class="navbar is-dark app-navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-inner">
+        <div class="navbar-brand">
+                <a class="navbar-item" href="https://bulma.io">
+                    <img alt="Vue logo" width="30" height="30" src="@/assets/logo.svg" />
+
+                </a>
+
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+                   @click="isActive = !isActive" :class="{ 'is-active': isActive }"
+                   data-target="navbarBasicExample">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
       <div class="navbar-brand">
         <RouterLink to="/dashboard" class="navbar-item has-text-weight-bold app-brand">
           FitTrack Pro
         </RouterLink>
-
-       <!-- <a> 
-         role="button"
-  class="navbar-burger"
-  :class="{ 'is-active': isActive }"
-  aria-label="menu"
-  :aria-expanded="isActive.toString()"
-  @click="isActive = !isActive"
->
-  <span aria-hidden="true"></span>
-  <span aria-hidden="true"></span>
-  <span aria-hidden="true"></span>
-</a> -->
       </div>
 
       <div class="navbar-menu" :class="{ 'is-active': isActive }">
@@ -68,28 +69,26 @@ function handleLogout() {
         <div class="navbar-end">
           <div v-if="authStore.isAuthenticated && authStore.currentUser" class="navbar-item">
             <div class="buttons">
-              <span class="tag is-info is-light">
-                👤 {{ authStore.currentUser.name }}
+              <span class="tag is-info is-light is-medium mr-3">
+                 {{ authStore.currentUser.name }}
               </span>
-
               <span
-                class="tag"
+                class="tag is-medium mr-3"
                 :class="authStore.isAdmin ? 'is-danger is-light' : 'is-success is-light'"
               >
                 {{ authStore.isAdmin ? 'Admin' : 'Member' }}
               </span>
-
-              <button class="button is-danger is-light is-small" @click="handleLogout">
+              <button class="button is-danger is-light is-medium " @click="handleLogout">
                 Logout
               </button>
             </div>
           </div>
 
-          <!-- <div v-else class="navbar-item">
+          <div v-else class="navbar-item">
             <RouterLink to="/login" class="button is-primary">
               Login
             </RouterLink>
-          </div> -->
+          </div>
         </div>
       </div>
     </div>
@@ -100,6 +99,9 @@ function handleLogout() {
 .app-navbar {
   padding-left: 1rem;
   padding-right: 1rem;
+  min-height: 4rem;       
+  padding-top: 0.75rem;    
+  padding-bottom: 0.75rem; 
 }
 
 .navbar-inner {
@@ -110,10 +112,9 @@ function handleLogout() {
 }
 
 .app-brand {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 
-/* Highlight active nav link */
 .navbar-item.is-active {
   background-color: rgba(255, 255, 255, 0.15) !important;
   border-radius: 6px;

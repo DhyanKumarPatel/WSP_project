@@ -5,10 +5,9 @@ import type { Activity } from '@/types'
 
 export const useActivitiesStore = defineStore('activities', () => {
 
-  // ── State ──────────────────────────────────────────
   const activities = ref<Activity[]>(activitiesData.activities as Activity[])
 
-  // ── Activity CRUD ──────────────────────────────────
+
   function getActivitiesByUser(userId: number) {
     return activities.value.filter((a) => a.userId === userId)
   }
@@ -36,7 +35,6 @@ export const useActivitiesStore = defineStore('activities', () => {
     activities.value = activities.value.filter((a) => a.id !== id)
   }
 
-  // ── Stat Helpers (moved from stats.ts) ────────────
   function getTotalActivities(userId: number) {
     return getActivitiesByUser(userId).length
   }

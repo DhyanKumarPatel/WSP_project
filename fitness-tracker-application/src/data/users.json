@@ -2,8 +2,8 @@
   "users": [
     {
       "id": 1,
-      "name": "User 1",
-      "email": "user_1@fittrack.com",
+      "name": "Joe Doe",
+      "email": "joe@fittrack.com",
       "password": "admin123",
       "role": "admin",
       "age": 30,
@@ -22,8 +22,8 @@
     },
     {
       "id": 3,
-      "name": "User 3",
-      "email": "user_3@fittrack.com",
+      "name": "Sam Smith",
+      "email": "sam@fittrack.com",
       "password": "user123",
       "role": "member",
       "age": 26,
