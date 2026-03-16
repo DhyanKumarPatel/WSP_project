@@ -1,3 +1,28 @@
+<script setup lang="ts">
+import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
+import StatCard from '@/components/StatCard.vue'
+import { useAuthStore } from '@/stores/auth'
+import { useActivitiesStore } from '@/stores/activities'
+import { useStatsStore } from '@/stores/stats'
+
+const authStore = useAuthStore()
+const activitiesStore = useActivitiesStore()
+const statsStore = useStatsStore()
+
+const recentActivities = computed(() => {
+  if (!authStore.currentUser) {
+    return []
+  }
+
+  return activitiesStore
+    .getActivitiesByUser(authStore.currentUser.id)
+    .slice()
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 5)
+})
+</script>
+
 <template>
   <section v-if="authStore.currentUser" class="dashboard-page">
     <div class="hero-card">
@@ -146,30 +171,7 @@
   </section>
 </template>
 
-<script setup lang="ts">
-import { computed } from 'vue'
-import { RouterLink } from 'vue-router'
-import StatCard from '@/components/StatCard.vue'
-import { useAuthStore } from '@/stores/auth'
-import { useActivitiesStore } from '@/stores/activities'
-import { useStatsStore } from '@/stores/stats'
 
-const authStore = useAuthStore()
-const activitiesStore = useActivitiesStore()
-const statsStore = useStatsStore()
-
-const recentActivities = computed(() => {
-  if (!authStore.currentUser) {
-    return []
-  }
-
-  return activitiesStore
-    .getActivitiesByUser(authStore.currentUser.id)
-    .slice()
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 5)
-})
-</script>
 
 <style scoped>
 .dashboard-page {

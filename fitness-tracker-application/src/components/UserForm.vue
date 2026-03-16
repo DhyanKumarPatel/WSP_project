@@ -1,3 +1,101 @@
+
+<script setup lang="ts">
+import { computed, reactive, ref, watch } from 'vue'
+import type { Role, User } from '@/types'
+
+const props = defineProps<{
+  user: User | null
+  emailExists: (email: string, excludeUserId?: number) => boolean
+}>()
+
+const emit = defineEmits<{
+  save: [payload: Omit<User, 'id'> | User]
+  cancel: []
+}>()
+
+const errorMessage = ref('')
+
+const form = reactive({
+  name: '',
+  email: '',
+  password: '',
+  role: '' as Role | '',
+  age: undefined as number | undefined,
+  heightCm: undefined as number | undefined,
+  weightKg: undefined as number | undefined,
+})
+
+const isEditing = computed(() => props.user !== null)
+
+watch(
+  () => props.user,
+  (user) => {
+    if (user) {
+      form.name = user.name
+      form.email = user.email
+      form.password = user.password
+      form.role = user.role
+      form.age = user.age
+      form.heightCm = user.heightCm
+      form.weightKg = user.weightKg
+    } else {
+      resetForm()
+    }
+  },
+  { immediate: true },
+)
+
+function resetForm() {
+  form.name = ''
+  form.email = ''
+  form.password = ''
+  form.role = ''
+  form.age = undefined
+  form.heightCm = undefined
+  form.weightKg = undefined
+  errorMessage.value = ''
+}
+
+function handleSubmit() {
+  errorMessage.value = ''
+
+  if (!form.name.trim() || !form.email.trim() || !form.password.trim() || !form.role) {
+    errorMessage.value = 'Please complete all required fields.'
+    return
+  }
+
+  if (props.emailExists(form.email, props.user?.id)) {
+    errorMessage.value = 'A user with this email already exists.'
+    return
+  }
+
+  const payload = {
+    name: form.name.trim(),
+    email: form.email.trim(),
+    password: form.password.trim(),
+    role: form.role,
+    age: form.age,
+    heightCm: form.heightCm,
+    weightKg: form.weightKg,
+  }
+
+  if (props.user) {
+    emit('save', {
+      id: props.user.id,
+      ...payload,
+    })
+  } else {
+    emit('save', payload)
+    resetForm()
+  }
+}
+
+function handleCancel() {
+  emit('cancel')
+  resetForm()
+}
+</script>
+
 <template>
   <div class="card">
     <header class="card-header">
@@ -137,100 +235,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
-import type { Role, User } from '@/types'
-
-const props = defineProps<{
-  user: User | null
-  emailExists: (email: string, excludeUserId?: number) => boolean
-}>()
-
-const emit = defineEmits<{
-  save: [payload: Omit<User, 'id'> | User]
-  cancel: []
-}>()
-
-const errorMessage = ref('')
-
-const form = reactive({
-  name: '',
-  email: '',
-  password: '',
-  role: '' as Role | '',
-  age: undefined as number | undefined,
-  heightCm: undefined as number | undefined,
-  weightKg: undefined as number | undefined,
-})
-
-const isEditing = computed(() => props.user !== null)
-
-watch(
-  () => props.user,
-  (user) => {
-    if (user) {
-      form.name = user.name
-      form.email = user.email
-      form.password = user.password
-      form.role = user.role
-      form.age = user.age
-      form.heightCm = user.heightCm
-      form.weightKg = user.weightKg
-    } else {
-      resetForm()
-    }
-  },
-  { immediate: true },
-)
-
-function resetForm() {
-  form.name = ''
-  form.email = ''
-  form.password = ''
-  form.role = ''
-  form.age = undefined
-  form.heightCm = undefined
-  form.weightKg = undefined
-  errorMessage.value = ''
-}
-
-function handleSubmit() {
-  errorMessage.value = ''
-
-  if (!form.name.trim() || !form.email.trim() || !form.password.trim() || !form.role) {
-    errorMessage.value = 'Please complete all required fields.'
-    return
-  }
-
-  if (props.emailExists(form.email, props.user?.id)) {
-    errorMessage.value = 'A user with this email already exists.'
-    return
-  }
-
-  const payload = {
-    name: form.name.trim(),
-    email: form.email.trim(),
-    password: form.password.trim(),
-    role: form.role,
-    age: form.age,
-    heightCm: form.heightCm,
-    weightKg: form.weightKg,
-  }
-
-  if (props.user) {
-    emit('save', {
-      id: props.user.id,
-      ...payload,
-    })
-  } else {
-    emit('save', payload)
-    resetForm()
-  }
-}
-
-function handleCancel() {
-  emit('cancel')
-  resetForm()
-}
-</script>

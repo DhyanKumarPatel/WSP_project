@@ -1,3 +1,11 @@
+<script setup lang="ts">
+import type { Activity } from '@/types'
+
+defineProps<{
+  activities: Activity[]
+}>()
+</script>
+
 <template>
   <div class="card">
     <header class="card-header">
@@ -40,10 +48,3 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import type { Activity } from '@/types'
-
-defineProps<{
-  activities: Activity[]
-}>()
-</script>

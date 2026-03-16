@@ -1,8 +1,8 @@
 <template>
   <div class="app-wrapper">
     <AppNavbar />
-    <section class="section">
-      <div class="container is-max-desktop">
+    <section class="section app-section">
+      <div class="container is-fluid app-container">
         <RouterView />
       </div>
     </section>
@@ -15,7 +15,16 @@ import AppNavbar from '@/components/NavBar.vue'
 
 <style scoped>
 .app-wrapper {
-  min-height: 600px;
-  background-color: #f5f7fa;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #000000, #eef2f7);
+}
+
+.app-section {
+  padding: 2rem 1.25rem 3rem;
+}
+
+.app-container {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
 }
 </style>

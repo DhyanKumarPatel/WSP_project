@@ -1,8 +1,23 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { RouterLink, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+const isActive = ref(false)
+const authStore = useAuthStore()
+const router = useRouter()
+
+function handleLogout() {
+  authStore.logout()
+  isActive.value = false
+  router.push('/login')
+}
+</script>
 <template>
-  <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
-    <div class="container is-max-desktop">
+  <nav class="navbar is-dark app-navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-inner">
       <div class="navbar-brand">
-        <RouterLink to="/dashboard" class="navbar-item has-text-weight-bold">
+        <RouterLink to="/dashboard" class="navbar-item has-text-weight-bold app-brand">
           FitTrack Pro
         </RouterLink>
 
@@ -22,38 +37,18 @@
 
       <div class="navbar-menu" :class="{ 'is-active': isActive }">
         <div v-if="authStore.isAuthenticated" class="navbar-start">
-          <RouterLink
-            to="/dashboard"
-            class="navbar-item"
-            active-class="is-active"
-          >
+          <RouterLink to="/dashboard" class="navbar-item" active-class="is-active">
             Dashboard
           </RouterLink>
-
-          <RouterLink
-            to="/activities"
-            class="navbar-item"
-            active-class="is-active"
-          >
+          <RouterLink to="/activities" class="navbar-item" active-class="is-active">
             Activities
           </RouterLink>
-
-          <RouterLink
-            to="/friends"
-            class="navbar-item"
-            active-class="is-active"
-          >
+          <RouterLink to="/friends" class="navbar-item" active-class="is-active">
             Friends
           </RouterLink>
-
-          <RouterLink
-            to="/stats"
-            class="navbar-item"
-            active-class="is-active"
-          >
+          <RouterLink to="/stats" class="navbar-item" active-class="is-active">
             Stats
           </RouterLink>
-
           <RouterLink
             v-if="authStore.isAdmin"
             to="/admin/users"
@@ -66,12 +61,15 @@
 
         <div class="navbar-end">
           <div v-if="authStore.isAuthenticated && authStore.currentUser" class="navbar-item">
-            <div class="buttons is-flex is-align-items-center">
+            <div class="buttons">
               <span class="tag is-info is-light">
                 {{ authStore.currentUser.name }}
               </span>
 
-              <span class="tag" :class="authStore.isAdmin ? 'is-danger is-light' : 'is-success is-light'">
+              <span
+                class="tag"
+                :class="authStore.isAdmin ? 'is-danger is-light' : 'is-success is-light'"
+              >
                 {{ authStore.isAdmin ? 'Admin' : 'Member' }}
               </span>
 
@@ -92,18 +90,35 @@
   </nav>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-
-const isActive = ref(false)
-const authStore = useAuthStore()
-const router = useRouter()
-
-function handleLogout() {
-  authStore.logout()
-  isActive.value = false
-  router.push('/login')
+<style scoped>
+.app-navbar {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
-</script>
+
+.navbar-inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-brand {
+  font-size: 1.2rem;
+}
+
+@media (min-width: 1024px) {
+  .navbar-menu {
+    display: flex !important;
+    flex-grow: 1;
+  }
+
+  .navbar-start {
+    margin-left: 1rem;
+  }
+
+  .navbar-end {
+    margin-left: auto;
+  }
+}
+</style>
