@@ -87,7 +87,6 @@ const maxBreakdownCount = computed(() =>
     <div class="columns">
       <div class="column is-5">
 
-        <!-- ActivityBreakdown inlined -->
         <div class="card">
           <header class="card-header">
             <p class="card-header-title">Activity Breakdown</p>

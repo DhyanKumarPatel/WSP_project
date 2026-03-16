@@ -81,7 +81,6 @@ function handleDeleteUser(id: number) {
           </div>
         </div>
 
-        <!-- UserTable inlined -->
         <div class="card">
           <header class="card-header">
             <p class="card-header-title">All Users</p>

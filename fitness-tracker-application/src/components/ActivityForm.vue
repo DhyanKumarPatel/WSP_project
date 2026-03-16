@@ -1,3 +1,113 @@
+
+<script setup lang="ts">
+import { computed, reactive, watch, ref } from 'vue'
+import type { Activity, ActivityType } from '@/types'
+
+const props = defineProps<{
+  activity: Activity | null
+}>()
+
+const emit = defineEmits<{
+  save: [payload: Omit<Activity, 'id'> | Activity]
+  cancel: []
+}>()
+
+const activityTypes: ActivityType[] = [
+  'Running',
+  'Walking',
+  'Cycling',
+  'Gym',
+  'Yoga',
+  'Swimming',
+]
+
+const errorMessage = ref('')
+
+const form = reactive({
+  type: '' as ActivityType | '',
+  durationMin: 0,
+  calories: 0,
+  date: '',
+  notes: '',
+})
+
+const isEditing = computed(() => props.activity !== null)
+
+watch(
+  () => props.activity,
+  (activity) => {
+    if (activity) {
+      form.type = activity.type
+      form.durationMin = activity.durationMin
+      form.calories = activity.calories
+      form.date = activity.date
+      form.notes = activity.notes || ''
+    } else {
+      resetForm()
+    }
+  },
+  { immediate: true },
+)
+
+function resetForm() {
+  form.type = ''
+  form.durationMin = 0
+  form.calories = 0
+  form.date = ''
+  form.notes = ''
+  errorMessage.value = ''
+}
+
+function handleSubmit() {
+  errorMessage.value = ''
+
+  if (!form.type || !form.date) {
+    errorMessage.value = 'Please complete all required fields.'
+    return
+  }
+
+  if (form.durationMin <= 0) {
+    errorMessage.value = 'Duration must be greater than 0.'
+    return
+  }
+
+  if (form.calories <= 0) {
+    errorMessage.value = 'Calories must be greater than 0.'
+    return
+  }
+
+  if (props.activity) {
+    emit('save', {
+      id: props.activity.id,
+      userId: props.activity.userId,
+      type: form.type,
+      durationMin: form.durationMin,
+      calories: form.calories,
+      date: form.date,
+      notes: form.notes.trim(),
+    })
+  } else {
+    emit('save', {
+      userId: 0,
+      type: form.type,
+      durationMin: form.durationMin,
+      calories: form.calories,
+      date: form.date,
+      notes: form.notes.trim(),
+    })
+  }
+
+  if (!props.activity) {
+    resetForm()
+  }
+}
+
+function handleCancel() {
+  emit('cancel')
+  resetForm()
+}
+</script>
+
 <template>
   <div class="card">
     <header class="card-header">
@@ -108,112 +218,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { computed, reactive, watch, ref } from 'vue'
-import type { Activity, ActivityType } from '@/types'
-
-const props = defineProps<{
-  activity: Activity | null
-}>()
-
-const emit = defineEmits<{
-  save: [payload: Omit<Activity, 'id'> | Activity]
-  cancel: []
-}>()
-
-const activityTypes: ActivityType[] = [
-  'Running',
-  'Walking',
-  'Cycling',
-  'Gym',
-  'Yoga',
-  'Swimming',
-]
-
-const errorMessage = ref('')
-
-const form = reactive({
-  type: '' as ActivityType | '',
-  durationMin: 0,
-  calories: 0,
-  date: '',
-  notes: '',
-})
-
-const isEditing = computed(() => props.activity !== null)
-
-watch(
-  () => props.activity,
-  (activity) => {
-    if (activity) {
-      form.type = activity.type
-      form.durationMin = activity.durationMin
-      form.calories = activity.calories
-      form.date = activity.date
-      form.notes = activity.notes || ''
-    } else {
-      resetForm()
-    }
-  },
-  { immediate: true },
-)
-
-function resetForm() {
-  form.type = ''
-  form.durationMin = 0
-  form.calories = 0
-  form.date = ''
-  form.notes = ''
-  errorMessage.value = ''
-}
-
-function handleSubmit() {
-  errorMessage.value = ''
-
-  if (!form.type || !form.date) {
-    errorMessage.value = 'Please complete all required fields.'
-    return
-  }
-
-  if (form.durationMin <= 0) {
-    errorMessage.value = 'Duration must be greater than 0.'
-    return
-  }
-
-  if (form.calories <= 0) {
-    errorMessage.value = 'Calories must be greater than 0.'
-    return
-  }
-
-  if (props.activity) {
-    emit('save', {
-      id: props.activity.id,
-      userId: props.activity.userId,
-      type: form.type,
-      durationMin: form.durationMin,
-      calories: form.calories,
-      date: form.date,
-      notes: form.notes.trim(),
-    })
-  } else {
-    emit('save', {
-      userId: 0,
-      type: form.type,
-      durationMin: form.durationMin,
-      calories: form.calories,
-      date: form.date,
-      notes: form.notes.trim(),
-    })
-  }
-
-  if (!props.activity) {
-    resetForm()
-  }
-}
-
-function handleCancel() {
-  emit('cancel')
-  resetForm()
-}
-</script>
