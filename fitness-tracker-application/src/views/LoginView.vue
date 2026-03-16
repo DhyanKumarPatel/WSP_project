@@ -1,3 +1,29 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+const email = ref('')
+const password = ref('')
+const errorMessage = ref('')
+
+const router = useRouter()
+const authStore = useAuthStore()
+
+function handleLogin() {
+  errorMessage.value = ''
+
+  const success = authStore.login(email.value, password.value)
+
+  if (!success) {
+    errorMessage.value = 'Invalid email or password.'
+    return
+  }
+
+  router.push('/dashboard')
+}
+</script>
+
 <template>
   <section class="login-page">
     <div class="login-wrapper">
@@ -14,7 +40,7 @@
           <div class="demo-users">
             <h3>Demo Accounts</h3>
             <div class="demo-user-card">
-              <strong>user 1</strong>
+              <strong>Admin</strong>
               <span>user_1@fittrack.com / admin123</span>
             </div>
             <div class="demo-user-card">
@@ -71,31 +97,7 @@
   </section>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
 
-const email = ref('')
-const password = ref('')
-const errorMessage = ref('')
-
-const router = useRouter()
-const authStore = useAuthStore()
-
-function handleLogin() {
-  errorMessage.value = ''
-
-  const success = authStore.login(email.value, password.value)
-
-  if (!success) {
-    errorMessage.value = 'Invalid email or password.'
-    return
-  }
-
-  router.push('/dashboard')
-}
-</script>
 
 <style scoped>
 .login-page {
