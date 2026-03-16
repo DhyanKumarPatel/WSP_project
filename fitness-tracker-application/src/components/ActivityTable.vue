@@ -1,7 +1,23 @@
+<script setup lang="ts">
+import type { Activity } from '@/types'
+
+defineProps<{
+  activities: Activity[]
+  showActions?: boolean   
+}>()
+
+defineEmits<{
+  edit: [activity: Activity]
+  delete: [id: number]
+}>()
+</script>
+
 <template>
   <div class="card">
     <header class="card-header">
-      <p class="card-header-title">Your Activities</p>
+      <p class="card-header-title">
+        {{ showActions ? 'Your Activities' : 'Recent Activity Summary' }}
+      </p>
     </header>
 
     <div class="card-content">
@@ -14,7 +30,7 @@
               <th>Duration</th>
               <th>Calories</th>
               <th>Notes</th>
-              <th class="has-text-centered">Actions</th>
+              <th v-if="showActions" class="has-text-centered">Actions</th>
             </tr>
           </thead>
 
@@ -27,18 +43,12 @@
               <td>{{ activity.durationMin }} min</td>
               <td>{{ activity.calories }}</td>
               <td>{{ activity.notes || '—' }}</td>
-              <td class="has-text-centered">
+              <td v-if="showActions" class="has-text-centered">
                 <div class="buttons is-centered">
-                  <button
-                    class="button is-small is-info is-light"
-                    @click="$emit('edit', activity)"
-                  >
+                  <button class="button is-small is-info is-light" @click="$emit('edit', activity)">
                     Edit
                   </button>
-                  <button
-                    class="button is-small is-danger is-light"
-                    @click="$emit('delete', activity.id)"
-                  >
+                  <button class="button is-small is-danger is-light" @click="$emit('delete', activity.id)">
                     Delete
                   </button>
                 </div>
@@ -55,15 +65,3 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import type { Activity } from '@/types'
-
-defineProps<{
-  activities: Activity[]
-}>()
-
-defineEmits<{
-  edit: [activity: Activity]
-  delete: [id: number]
-}>()
-</script>

@@ -1,18 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { ref, watch } from 'vue'
+import { RouterLink, useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 const isActive = ref(false)
 const authStore = useAuthStore()
 const router = useRouter()
+const route = useRoute()
+
+// Close mobile menu on route change
+watch(() => route.path, () => {
+  isActive.value = false
+})
 
 function handleLogout() {
   authStore.logout()
-  isActive.value = false
   router.push('/login')
 }
 </script>
+
 <template>
   <nav class="navbar is-dark app-navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-inner">
@@ -21,18 +27,18 @@ function handleLogout() {
           FitTrack Pro
         </RouterLink>
 
-        <a
-          role="button"
-          class="navbar-burger"
-          :class="{ 'is-active': isActive }"
-          aria-label="menu"
-          aria-expanded="false"
-          @click="isActive = !isActive"
-        >
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
+       <!-- <a> 
+         role="button"
+  class="navbar-burger"
+  :class="{ 'is-active': isActive }"
+  aria-label="menu"
+  :aria-expanded="isActive.toString()"
+  @click="isActive = !isActive"
+>
+  <span aria-hidden="true"></span>
+  <span aria-hidden="true"></span>
+  <span aria-hidden="true"></span>
+</a> -->
       </div>
 
       <div class="navbar-menu" :class="{ 'is-active': isActive }">
@@ -63,7 +69,7 @@ function handleLogout() {
           <div v-if="authStore.isAuthenticated && authStore.currentUser" class="navbar-item">
             <div class="buttons">
               <span class="tag is-info is-light">
-                {{ authStore.currentUser.name }}
+                👤 {{ authStore.currentUser.name }}
               </span>
 
               <span
@@ -73,17 +79,17 @@ function handleLogout() {
                 {{ authStore.isAdmin ? 'Admin' : 'Member' }}
               </span>
 
-              <button class="button is-light" @click="handleLogout">
+              <button class="button is-danger is-light is-small" @click="handleLogout">
                 Logout
               </button>
             </div>
           </div>
 
-          <div v-else class="navbar-item">
+          <!-- <div v-else class="navbar-item">
             <RouterLink to="/login" class="button is-primary">
               Login
             </RouterLink>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -105,6 +111,12 @@ function handleLogout() {
 
 .app-brand {
   font-size: 1.2rem;
+}
+
+/* Highlight active nav link */
+.navbar-item.is-active {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  border-radius: 6px;
 }
 
 @media (min-width: 1024px) {

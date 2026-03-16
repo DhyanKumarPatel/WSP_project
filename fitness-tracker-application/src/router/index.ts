@@ -1,11 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '@/views/LoginView.vue'
-import DashboardView from '@/views/DashboardView.vue'
-import ActivitiesView from '@/views/ActivitiesView.vue'
-import FriendsView from '@/views/FriendsView.vue'
-import StatsView from '@/views/StatsView.vue'
-import AdminUsersView from '@/views/AdminUsersView.vue'
-import NotFoundView from '@/views/NotFoundView.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
@@ -18,42 +12,37 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: LoginView,
+      component: LoginView, 
     },
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: DashboardView,
+      component: () => import('@/views/DashboardView.vue'),
       meta: { requiresAuth: true },
     },
     {
       path: '/activities',
       name: 'activities',
-      component: ActivitiesView,
+      component: () => import('@/views/ActivitiesView.vue'),
       meta: { requiresAuth: true },
     },
     {
       path: '/friends',
       name: 'friends',
-      component: FriendsView,
+      component: () => import('@/views/FriendsView.vue'),
       meta: { requiresAuth: true },
     },
     {
       path: '/stats',
       name: 'stats',
-      component: StatsView,
+      component: () => import('@/views/StatsView.vue'),
       meta: { requiresAuth: true },
     },
     {
       path: '/admin/users',
       name: 'admin-users',
-      component: AdminUsersView,
+      component: () => import('@/views/AdminUsersView.vue'),
       meta: { requiresAuth: true, requiresAdmin: true },
-    },
-    {
-      path: '/:pathMatch(.*)*',
-      name: 'not-found',
-      component: NotFoundView,
     },
   ],
 })
