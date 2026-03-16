@@ -27,7 +27,14 @@ function handleLogout() {
 
                 </a>
 
-                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+               
+            </div>
+      <div class="navbar-brand">
+        <RouterLink to="/dashboard" class="navbar-item has-text-weight-bold app-brand">
+          FitTrack Pro
+        </RouterLink>
+      </div>
+       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
                    @click="isActive = !isActive" :class="{ 'is-active': isActive }"
                    data-target="navbarBasicExample">
                     <span aria-hidden="true"></span>
@@ -35,12 +42,6 @@ function handleLogout() {
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>
                 </a>
-            </div>
-      <div class="navbar-brand">
-        <RouterLink to="/dashboard" class="navbar-item has-text-weight-bold app-brand">
-          FitTrack Pro
-        </RouterLink>
-      </div>
 
       <div class="navbar-menu" :class="{ 'is-active': isActive }">
         <div v-if="authStore.isAuthenticated" class="navbar-start">
