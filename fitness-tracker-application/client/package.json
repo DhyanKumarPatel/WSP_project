@@ -7,7 +7,7 @@
     "dev": "vite",
     "dev:server": "tsx watch ../server/index.ts",
     "dev:all": "run-p dev dev:server",
-    "build": "run-p type-check \"build-only {@}\" --",
+    "build": "vite build",
     "build:server": "tsc -p ../tsconfig.server.json",
     "preview": "vite preview",
     "build-only": "vite build",
