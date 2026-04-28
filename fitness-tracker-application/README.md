@@ -4,7 +4,7 @@ A comprehensive fitness tracking and community platform built with Vue 3 and Exp
 
 ## 🌐 Live Site
 
-**[FitTrack Pro - Live Application](https://fittrack-pro-oyxf.onrender.com)**
+**[FitTrack Pro - Live Application](https://wsp-frontend.onrender.com)**
 
 Visit the live site to experience the full fitness tracking application!
 
@@ -128,13 +128,5 @@ Through building FitTrack Pro, we learned:
 
 ---
 
-## 🔄 Development Workflow
 
-1. **Start servers**: `npm run dev:all`
-2. **Make changes** to frontend or backend code
-3. **Test in browser** or with API client (REST Client extension)
-4. **Use scratch.http** for testing API endpoints with JWT tokens
-5. **Check console** for error messages and debugging information
-
----
 
