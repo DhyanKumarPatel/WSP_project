@@ -12,6 +12,7 @@
     "build:server": "npm run build:server --workspace=client",
     "preview": "npm run preview --workspace=client",
     "start": "npm run start --workspace=client",
+    "start:server": "npm run start --workspace=client",
     "lint": "npm run lint --workspace=client",
     "format": "npm run format --workspace=client",
     "seed": "npm run seed --workspace=client"
