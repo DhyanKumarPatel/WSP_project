@@ -1,0 +1,118 @@
+
+<script setup lang="ts">
+import { computed, ref, onMounted } from 'vue'
+import ActivityForm from '@/components/ActivityForm.vue'
+import ActivityTable from '@/components/ActivityTable.vue'
+import StatCard from '@/components/StatCard.vue'
+import { useAuthStore } from '@/stores/auth'
+import { useActivitiesStore } from '@/stores/activities'
+import type { Activity } from '@/types'
+
+const authStore = useAuthStore()
+const activitiesStore = useActivitiesStore()
+
+const selectedActivity = ref<Activity | null>(null)
+
+onMounted(async () => {
+  if (authStore.currentUser) {
+    await activitiesStore.fetchUserActivities(authStore.currentUser.id)
+  }
+})
+
+const userActivities = computed(() => {
+  if (!authStore.currentUser) return []
+  return activitiesStore.getActivitiesByUser(authStore.currentUser.id)
+})
+
+const sortedActivities = computed(() => {
+  return userActivities.value
+    .slice()
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+})
+
+const totalDuration = computed(() => {
+  return userActivities.value.reduce((total, a) => total + a.durationMin, 0)
+})
+
+const totalCalories = computed(() => {
+  return userActivities.value.reduce((total, a) => total + a.calories, 0)
+})
+
+async function handleSaveActivity(payload: Omit<Activity, 'id'> | Activity) {
+  if (!authStore.currentUser) return
+
+  if ('id' in payload) {
+    await activitiesStore.updateActivity(payload)
+    selectedActivity.value = null
+    return
+  }
+
+  await activitiesStore.addActivity({
+    ...payload,
+    userId: authStore.currentUser.id,
+  })
+}
+
+function handleEditActivity(activity: Activity) {
+  selectedActivity.value = { ...activity }
+}
+
+function handleCancelEdit() {
+  selectedActivity.value = null
+}
+
+async function handleDeleteActivity(id: number) {
+  const confirmed = window.confirm('Are you sure you want to delete this activity?')
+  if (!confirmed) return
+
+  await activitiesStore.deleteActivity(id)
+
+  if (selectedActivity.value?.id === id) {
+    selectedActivity.value = null
+  }
+}
+</script>
+
+<template>
+  <div v-if="authStore.currentUser">
+    <section class="hero is-info is-small mb-5">
+      <div class="hero-body">
+        <p class="title">Activity Log</p>
+        <p class="subtitle">
+          Add, edit, and manage your personal fitness activities.
+        </p>
+      </div>
+    </section>
+
+    <div class="columns">
+      <div class="column is-5">
+        <ActivityForm
+          :activity="selectedActivity"
+          @save="handleSaveActivity"
+          @cancel="handleCancelEdit"
+        />
+      </div>
+
+      <div class="column is-7">
+        <div class="columns is-multiline mb-1">
+          <div class="column is-12-mobile is-4-tablet">
+            <StatCard label="Total Activities" :value="userActivities.length" />
+          </div>
+          <div class="column is-12-mobile is-4-tablet">
+            <StatCard label="Total Duration" :value="`${totalDuration} min`" />
+          </div>
+          <div class="column is-12-mobile is-4-tablet">
+            <StatCard label="Calories Burned" :value="totalCalories" />
+          </div>
+        </div>
+
+        <ActivityTable
+          :activities="sortedActivities"
+          show-actions
+          @edit="handleEditActivity"
+          @delete="handleDeleteActivity"
+        />
+      </div>
+    </div>
+  </div>
+</template>

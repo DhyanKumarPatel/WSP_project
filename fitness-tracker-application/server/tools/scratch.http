@@ -1,0 +1,123 @@
+### Health Check
+GET http://localhost:3000/health
+
+###
+### AUTH ENDPOINTS (Public)
+###
+
+### Login - Admin User
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "joe@fittrack.com",
+  "password": "admin123"
+}
+
+###
+### Login - Regular Member
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "dhyan@fittrack.com",
+  "password": "user123"
+}
+
+###
+### Login - Another Member
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "sam@fittrack.com",
+  "password": "user123"
+}
+
+###
+### USERS ENDPOINTS (Protected - Requires JWT Token)
+###
+
+### Get All Users
+GET http://localhost:3000/api/v1/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTAsImVtYWlsIjoiam9lQGZpdHRyYWNrLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3NzMyODcyNSwiZXhwIjoxNzc3OTMzNTI1fQ.oT3vbv-WCoBMqFO2BJctTdH3rwKS2FH_HjW6nCjy1wg
+
+###
+### Get User by ID
+GET http://localhost:3000/api/v1/users/50
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTAsImVtYWlsIjoiam9lQGZpdHRyYWNrLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3NzMyODcyNSwiZXhwIjoxNzc3OTMzNTI1fQ.oT3vbv-WCoBMqFO2BJctTdH3rwKS2FH_HjW6nCjy1wg
+
+###
+### Update User
+PATCH http://localhost:3000/api/v1/users/52
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIsImVtYWlsIjoiZGh5YW5AZml0dHJhY2suY29tIiwicm9sZSI6Im1lbWJlciIsImlhdCI6MTc3NzMyODY5OCwiZXhwIjoxNzc3OTMzNDk4fQ.zhp_2UdfBm9TaE102qo7vkYb2YQ6R5U1udoVBtFamXo
+
+{
+  "age": 26,
+  "weightKg": 72
+}
+
+###
+### ACTIVITIES ENDPOINTS (Protected - Requires JWT Token)
+###
+
+### Get All Activities
+GET http://localhost:3000/api/v1/activities
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIsImVtYWlsIjoiZGh5YW5AZml0dHJhY2suY29tIiwicm9sZSI6Im1lbWJlciIsImlhdCI6MTc3NzMyODY5OCwiZXhwIjoxNzc3OTMzNDk4fQ.zhp_2UdfBm9TaE102qo7vkYb2YQ6R5U1udoVBtFamXo
+
+###
+### Get Activity by ID
+GET http://localhost:3000/api/v1/activities/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIsImVtYWlsIjoiZGh5YW5AZml0dHJhY2suY29tIiwicm9sZSI6Im1lbWJlciIsImlhdCI6MTc3NzMyODY5OCwiZXhwIjoxNzc3OTMzNDk4fQ.zhp_2UdfBm9TaE102qo7vkYb2YQ6R5U1udoVBtFamXo
+
+###
+### Create New Activity
+POST http://localhost:3000/api/v1/activities
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIsImVtYWlsIjoiZGh5YW5AZml0dHJhY2suY29tIiwicm9sZSI6Im1lbWJlciIsImlhdCI6MTc3NzMyODY5OCwiZXhwIjoxNzc3OTMzNDk4fQ.zhp_2UdfBm9TaE102qo7vkYb2YQ6R5U1udoVBtFamXo
+
+{
+  "userId": 52,
+  "type": "Running",
+  "durationMin": 45,
+  "calories": 350,
+  "date": "2026-04-27",
+  "notes": "Morning run at park"
+}
+
+###
+### Delete Activity
+DELETE http://localhost:3000/api/v1/activities/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIsImVtYWlsIjoiZGh5YW5AZml0dHJhY2suY29tIiwicm9sZSI6Im1lbWJlciIsImlhdCI6MTc3NzMyODY5OCwiZXhwIjoxNzc3OTMzNDk4fQ.zhp_2UdfBm9TaE102qo7vkYb2YQ6R5U1udoVBtFamXo
+
+###
+### FRIENDS ENDPOINTS (Protected - Requires JWT Token)
+###
+
+### Get All Friends
+GET http://localhost:3000/api/v1/friends
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIsImVtYWlsIjoiZGh5YW5AZml0dHJhY2suY29tIiwicm9sZSI6Im1lbWJlciIsImlhdCI6MTc3NzMyODY5OCwiZXhwIjoxNzc3OTMzNDk4fQ.zhp_2UdfBm9TaE102qo7vkYb2YQ6R5U1udoVBtFamXo
+
+###
+### Get Friend by ID
+GET http://localhost:3000/api/v1/friends/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIsImVtYWlsIjoiZGh5YW5AZml0dHJhY2suY29tIiwicm9sZSI6Im1lbWJlciIsImlhdCI6MTc3NzMyODY5OCwiZXhwIjoxNzc3OTMzNDk4fQ.zhp_2UdfBm9TaE102qo7vkYb2YQ6R5U1udoVBtFamXo
+
+###
+### Add Friend Connection
+POST http://localhost:3000/api/v1/friends
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIsImVtYWlsIjoiZGh5YW5AZml0dHJhY2suY29tIiwicm9sZSI6Im1lbWJlciIsImlhdCI6MTc3NzMyODY5OCwiZXhwIjoxNzc3OTMzNDk4fQ.zhp_2UdfBm9TaE102qo7vkYb2YQ6R5U1udoVBtFamXo
+
+{
+  "userId": 52,
+  "friendId": 53
+}
+
+###
+### Remove Friend
+DELETE http://localhost:3000/api/v1/friends/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIsImVtYWlsIjoiZGh5YW5AZml0dHJhY2suY29tIiwicm9sZSI6Im1lbWJlciIsImlhdCI6MTc3NzMyODY5OCwiZXhwIjoxNzc3OTMzNDk4fQ.zhp_2UdfBm9TaE102qo7vkYb2YQ6R5U1udoVBtFamXo
+
+###
