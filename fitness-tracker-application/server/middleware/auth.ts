@@ -1,15 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
-import { extractToken, verifyToken, type DecodedToken } from '../controllers/auth'
+import { extractToken, verifyToken } from '../controllers/auth'
 import type { DataEnvelope } from '../types'
-
-// Extend Express Request type to include user
-declare global {
-  namespace Express {
-    interface Request {
-      user?: DecodedToken
-    }
-  }
-}
 
 /**
  * JWT Authentication Middleware

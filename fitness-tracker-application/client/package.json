@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
-    "start": "node dist/index.js",
+    "start": "node ../dist/server/index.js",
     "seed": "tsx ../server/models/seed_data.ts",
     "lint": "run-s lint:*",
     "lint:oxlint": "oxlint . --fix",

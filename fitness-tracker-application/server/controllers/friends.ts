@@ -136,6 +136,7 @@ router.post('/', async (req: Request, res: Response<DataEnvelope<Friendship | nu
 router.delete('/:userId/:friendId', async (req: Request, res: Response<DataEnvelope<null>>) => {
   const userId = Number(req.params.userId)
   const friendId = Number(req.params.friendId)
+  const { id: authId, role: authRole } = (req as any).user || {}
 
   try {
     // Verify both users exist
