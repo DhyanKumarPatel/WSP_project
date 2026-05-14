@@ -15,9 +15,16 @@ export type DataListEnvelope<T> = {
   isSuccess: boolean
 }
 
-/**
- * Get authorization headers with JWT token
- */
+export type PaginatedEnvelope<T> = {
+  data: T[]
+  total: number
+  limit: number
+  offset: number
+  message: string
+  isSuccess: boolean
+}
+
+
 function getAuthHeaders(): Record<string, string> {
   const authStore = useAuthStore()
   const token = authStore.getToken()
@@ -31,16 +38,13 @@ function getAuthHeaders(): Record<string, string> {
   return {}
 }
 
-/**
- * Handle API errors including 401 (unauthorized)
- */
+
 function handleApiError(status: number, message: string) {
   if (status === 401) {
     // Token expired or invalid
     const authStore = useAuthStore()
     authStore.logout()
 
-    // Try to redirect to login
     try {
       const router = useRouter()
       router.push('/login')
@@ -114,6 +118,48 @@ export async function apiList<T>(
   try {
     const response = await fetch(url, config)
     const result: DataListEnvelope<T> = await response.json()
+
+    if (!response.ok) {
+      console.error(`API Error: ${result.message}`)
+      handleApiError(response.status, result.message)
+    }
+
+    return result
+  } catch (error) {
+    console.error('Fetch error:', error)
+    throw error
+  }
+}
+
+
+export async function apiPaginated<T>(
+  endpoint: string,
+  params: { limit: number; offset: number } & Record<string, string | number | undefined>,
+  options: RequestInit = {},
+): Promise<PaginatedEnvelope<T>> {
+  const query = new URLSearchParams()
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== null) {
+      query.set(key, String(value))
+    }
+  }
+
+  const sep = endpoint.includes('?') ? '&' : '?'
+  const url = `${API_ROOT}${endpoint}${sep}${query.toString()}`
+
+  const config: RequestInit = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders(),
+      ...options.headers,
+    },
+    ...options,
+  }
+
+  try {
+    const response = await fetch(url, config)
+    const result: PaginatedEnvelope<T> = await response.json()
 
     if (!response.ok) {
       console.error(`API Error: ${result.message}`)

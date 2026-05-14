@@ -34,3 +34,7 @@ export type Friendship = {
   userId: number
   friendId: number
 }
+
+// Activity enriched with the friend's display name - returned by the
+// /friends/:userId/activities paginated feed endpoint.
+export type FriendActivity = Activity & { userName: string }

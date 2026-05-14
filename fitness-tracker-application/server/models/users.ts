@@ -98,6 +98,37 @@ export async function seed() {
     { name: 'Sophia Rodriguez', email: 'sophia@fittrack.com', password: 'user123', role: 'member', age: 25, height_cm: 165, weight_kg: 57 },
   ]
 
+  // Generate 50 additional members procedurally so we have plenty of users for
+  // the infinite-scroll demo. They use predictable emails: user1@fittrack.com .. user50@fittrack.com
+  const firstNames = [
+    'Alex', 'Jordan', 'Taylor', 'Morgan', 'Casey', 'Riley', 'Avery', 'Quinn', 'Parker', 'Drew',
+    'Skyler', 'Reese', 'Hayden', 'Cameron', 'Rowan', 'Sage', 'Blake', 'Logan', 'Peyton', 'Emerson',
+    'Finley', 'Harper', 'Jamie', 'Kendall', 'Lane', 'Micah', 'Nico', 'Oakley', 'Phoenix', 'River',
+    'Shawn', 'Tatum', 'Quincy', 'Remy', 'Sloan', 'Tyler', 'Aiden', 'Bella', 'Carter', 'Dakota',
+    'Ethan', 'Faith', 'Grace', 'Hunter', 'Iris', 'Jade', 'Kira', 'Leo', 'Maya', 'Nora',
+  ]
+  const lastNames = [
+    'Adams', 'Baker', 'Carter', 'Davis', 'Evans', 'Foster', 'Green', 'Hill', 'Irwin', 'Jones',
+    'King', 'Lewis', 'Mason', 'Nguyen', 'Owens', 'Price', 'Quinn', 'Reed', 'Smith', 'Turner',
+    'Underwood', 'Vance', 'Walker', 'Xu', 'Young', 'Zimmer', 'Bell', 'Cruz', 'Dean', 'Ellis',
+    'Fox', 'Grant', 'Hayes', 'Ingram', 'Jensen', 'Kim', 'Lopez', 'Mills', 'Nash', 'Ortiz',
+    'Patel', 'Quintero', 'Reyes', 'Stone', 'Tran', 'Vargas', 'Watts', 'York', 'Zane', 'Pine',
+  ]
+
+  for (let i = 0; i < 50; i++) {
+    const first = firstNames[i % firstNames.length]
+    const last = lastNames[i % lastNames.length]
+    usersData.push({
+      name: `${first} ${last}`,
+      email: `user${i + 1}@fittrack.com`,
+      password: 'user123',
+      role: 'member',
+      age: 20 + (i % 30), // 20..49
+      height_cm: 155 + (i % 35), // 155..189
+      weight_kg: 50 + (i % 45), // 50..94
+    })
+  }
+
   const { error, data } = await db.from(TABLES.USERS).insert(usersData).select()
   if (error) {
     throw error

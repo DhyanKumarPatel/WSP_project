@@ -11,6 +11,16 @@ export type DataListEnvelope<T> = {
   isSuccess: boolean
 }
 
+// Paginated list envelope - used for infinite-scroll endpoints
+export type PaginatedEnvelope<T> = {
+  data: T[]
+  total: number
+  limit: number
+  offset: number
+  message: string
+  isSuccess: boolean
+}
+
 // Role Type
 export type Role = 'admin' | 'member'
 
@@ -47,5 +57,5 @@ export type Friendship = {
   friendId: number
 }
 
-// User without password (for API responses - don't send passwords to frontend)
+
 export type UserPublic = Omit<User, 'password'>

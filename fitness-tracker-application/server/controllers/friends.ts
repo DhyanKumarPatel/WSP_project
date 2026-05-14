@@ -1,5 +1,13 @@
 import { Router, Request, Response } from 'express'
-import type { DataEnvelope, DataListEnvelope, Friendship, User, Activity, UserPublic } from '../types'
+import type {
+  DataEnvelope,
+  DataListEnvelope,
+  PaginatedEnvelope,
+  Friendship,
+  User,
+  Activity,
+  UserPublic,
+} from '../types'
 import { friendsModel } from '../models/friends'
 import { usersModel } from '../models/users'
 import { activitiesModel } from '../models/activities'
@@ -187,57 +195,92 @@ router.delete('/:userId/:friendId', async (req: Request, res: Response<DataEnvel
   }
 })
 
-// GET friend activities
-router.get('/:userId/activities', async (req: Request, res: Response<DataListEnvelope<Activity & { userName: string }>>) => {
-  const userId = Number(req.params.userId)
-  const { id: authId, role: authRole } = (req as any).user || {}
 
-  try {
-    // Authorization: owner or admin only
-    if (authId !== userId && authRole !== 'admin') {
-      return res.status(403).json({ data: [], message: 'Forbidden', isSuccess: false })
-    }
+router.get(
+  '/:userId/activities',
+  async (
+    req: Request,
+    res: Response<PaginatedEnvelope<Activity & { userName: string }>>,
+  ) => {
+    const userId = Number(req.params.userId)
+    const { id: authId, role: authRole } = (req as any).user || {}
 
-    // Verify user exists
-    const user = await usersModel.get(userId)
-    if (!user) {
-      return res.status(404).json({
+    
+    const rawLimit = Number(req.query.limit ?? 20)
+    const rawOffset = Number(req.query.offset ?? 0)
+    const limit = Number.isFinite(rawLimit) ? Math.max(1, Math.min(50, Math.floor(rawLimit))) : 20
+    const offset = Number.isFinite(rawOffset) ? Math.max(0, Math.floor(rawOffset)) : 0
+
+    try {
+      // Authorization: owner or admin only
+      if (authId !== userId && authRole !== 'admin') {
+        return res
+          .status(403)
+          .json({ data: [], total: 0, limit, offset, message: 'Forbidden', isSuccess: false })
+      }
+
+      // Verify user exists
+      const user = await usersModel.get(userId)
+      if (!user) {
+        return res.status(404).json({
+          data: [],
+          total: 0,
+          limit,
+          offset,
+          message: 'User not found',
+          isSuccess: false,
+        })
+      }
+
+      const friendIds = await friendsModel.getFriendIds(userId)
+
+      if (friendIds.length === 0) {
+        return res.json({
+          data: [],
+          total: 0,
+          limit,
+          offset,
+          message: 'No friends yet',
+          isSuccess: true,
+        })
+      }
+
+    
+      const { items, total } = await activitiesModel.getByUserIdsPaged(friendIds, limit, offset)
+
+      // Resolve friend names for this page only.
+      const uniqueIds = Array.from(new Set(items.map((a) => a.userId)))
+      const friendUsers = await Promise.all(uniqueIds.map((id) => usersModel.get(id)))
+      const nameById = new Map<number, string>()
+      friendUsers.forEach((u) => {
+        if (u) nameById.set(u.id, u.name)
+      })
+
+      const enriched = items.map((a) => ({
+        ...a,
+        userName: nameById.get(a.userId) ?? 'Unknown',
+      }))
+
+      res.json({
+        data: enriched,
+        total,
+        limit,
+        offset,
+        message: 'Friend activities retrieved successfully',
+        isSuccess: true,
+      })
+    } catch (err) {
+      console.error('Friend feed error:', err instanceof Error ? err.message : err)
+      res.status(500).json({
         data: [],
-        message: 'User not found',
+        total: 0,
+        limit,
+        offset,
+        message: 'Failed to retrieve friend activities',
         isSuccess: false,
       })
     }
-
-    const friendIds = await friendsModel.getFriendIds(userId)
-    const friendActivities: Array<Activity & { userName: string }> = []
-
-    for (const friendId of friendIds) {
-      const friend = await usersModel.get(friendId)
-      if (friend) {
-        const activities = await activitiesModel.getByUserId(friendId)
-        activities.forEach((activity) => {
-          friendActivities.push({
-            ...activity,
-            userName: friend.name,
-          })
-        })
-      }
-    }
-
-    friendActivities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-
-    res.json({
-      data: friendActivities,
-      message: 'Friend activities retrieved successfully',
-      isSuccess: true,
-    })
-  } catch {
-    res.status(500).json({
-      data: [],
-      message: 'Failed to retrieve friend activities',
-      isSuccess: false,
-    })
-  }
-})
+  },
+)
 
 export default router

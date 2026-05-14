@@ -90,6 +90,33 @@ export const activitiesModel = {
       totalCalories: activities.reduce((sum, a) => sum + a.calories, 0),
     }
   },
+
+
+  async getByUserIdsPaged(
+    userIds: number[],
+    limit: number,
+    offset: number,
+  ): Promise<{ items: Activity[]; total: number }> {
+    if (userIds.length === 0) {
+      return { items: [], total: 0 }
+    }
+
+    const db = connect()
+    const { data, error, count } = await db
+      .from(TABLES.ACTIVITIES)
+      .select('*', { count: 'exact' })
+      .in('user_id', userIds)
+      .order('date', { ascending: false })
+      .order('id', { ascending: false })
+      .range(offset, offset + limit - 1)
+
+    if (error) throw error
+
+    return {
+      items: (data ?? []).map(toCamelCase) as Activity[],
+      total: count ?? 0,
+    }
+  },
 }
 
 export async function seed(userIds: number[]) {
@@ -104,20 +131,22 @@ export async function seed(userIds: number[]) {
     notes: string
   }> = []
 
-  // Generate dates for the past 30 days
+ 
+  const DAYS = 180
+  const MAX_PER_USER_PER_DAY = 3
   const today = new Date()
-  for (let i = 0; i < 30; i++) {
+
+  for (let i = 0; i < DAYS; i++) {
     const date = new Date(today)
     date.setDate(date.getDate() - i)
     const dateStr = date.toISOString().split('T')[0]
 
-    // Randomly assign activities to users
     userIds.forEach((userId) => {
-      // Each user gets 1-3 random activities spread across the month
-      if (Math.random() < 0.4) {
+      const activitiesToday = Math.floor(Math.random() * (MAX_PER_USER_PER_DAY + 1)) // 0..3
+      for (let j = 0; j < activitiesToday; j++) {
         const type = activityTypes[Math.floor(Math.random() * activityTypes.length)]
         const duration = Math.floor(Math.random() * 60) + 15 // 15-75 minutes
-        const calories = Math.floor(duration * 7 + Math.random() * 50) // Rough estimate
+        const calories = Math.floor(duration * 7 + Math.random() * 50)
 
         activitiesData.push({
           user_id: userId,
@@ -125,20 +154,24 @@ export async function seed(userIds: number[]) {
           date: dateStr,
           duration_min: duration,
           calories,
-          notes: `${type} session at ${new Date(dateStr).toLocaleDateString()}`,
+          notes: `${type} session on ${new Date(dateStr).toLocaleDateString()}`,
         })
       }
     })
   }
 
-  if (activitiesData.length > 0) {
-    const { error, data } = await db.from(TABLES.ACTIVITIES).insert(activitiesData).select()
-    if (error) {
-      throw error
-    }
-    const count = data?.length || activitiesData.length
-    console.log(`✓ Seeded ${count} activities`)
-    return count
+  if (activitiesData.length === 0) return 0
+
+
+  const CHUNK_SIZE = 500
+  let inserted = 0
+  for (let i = 0; i < activitiesData.length; i += CHUNK_SIZE) {
+    const chunk = activitiesData.slice(i, i + CHUNK_SIZE)
+    const { error, data } = await db.from(TABLES.ACTIVITIES).insert(chunk).select('id')
+    if (error) throw error
+    inserted += data?.length ?? chunk.length
   }
-  return 0
+
+  console.log(`✓ Seeded ${inserted} activities across the past ${DAYS} days`)
+  return inserted
 }
